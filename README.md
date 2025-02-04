@@ -2,72 +2,53 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Boilerplate NestJS API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeto é um boilerplate para aplicações NestJS seguindo uma arquitetura modular e organizada.
 
-## Description
+## Estrutura do Projeto
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A estrutura do projeto é organizada em camadas, facilitando a manutenção e escalabilidade do código.
 
-## Installation
+### Diretórios Principais
 
-```bash
-$ npm install
-```
+- **application/**: Contém a lógica de aplicação, incluindo eventos, gateways e controladores HTTP.
+  - `events/`: Define os eventos do sistema.
+  - `gateway/`: Implementação de WebSockets e outros gateways de comunicação.
+  - `http/`: Controladores e serviços expostos via API REST.
+- **domain/**: Representa o domínio da aplicação, com as entidades e regras de negócio.
+  - `organization/`: Módulo relacionado à gestão de organizações.
+  - `shared/`: Contém código reutilizável entre diferentes domínios.
+  - `users/`: Módulo de usuários.
+- **infrastructure/**: Responsável pela infraestrutura do projeto, como conexão com bancos de dados e repositórios.
+  - `database/`: Configuração e implementação do banco de dados.
+- **integrations/**: Módulo destinado a integrações com serviços externos.
+- **utils/**: Contém utilitários e funções auxiliares.
 
-## Running the app
+Além desses diretórios, os arquivos principais são:
+- `app.module.ts`: Módulo raiz da aplicação NestJS.
+- `main.ts`: Ponto de entrada da aplicação.
 
-```bash
-# development
-$ npm run start
+## Como Adicionar Novas Features
 
-# watch mode
-$ npm run start:dev
+Para adicionar uma nova feature, siga os seguintes passos:
 
-# production mode
-$ npm run start:prod
-```
+1. **Criar a entidade no domínio**:
+   - Adicione um novo diretório dentro de `domain/` correspondente à nova feature.
+   - Defina os modelos, interfaces e serviços necessários para a regra de negócio.
 
-## Test
+2. **Adicionar os serviços de aplicação**:
+   - Dentro de `application/`, crie os controladores em `http/` e os eventos, se necessário.
+   - Caso a feature precise de WebSockets, adicione no `gateway/`.
 
-```bash
-# unit tests
-$ npm run test
+3. **Criar a infraestrutura**:
+   - Se a feature precisar de banco de dados, adicione as configurações e repositórios em `infrastructure/database/`.
 
-# e2e tests
-$ npm run test:e2e
+4. **Registrar o módulo**:
+   - Adicione o novo módulo ao `app.module.ts` para que o NestJS o reconheça.
 
-# test coverage
-$ npm run test:cov
-```
+5. **Testar a implementação**:
+   - Teste a API utilizando ferramentas como Postman ou Insomnia.
+   - Crie testes automatizados para validar o funcionamento.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Com essa estrutura modular, novas funcionalidades podem ser adicionadas de forma organizada e escalável.
