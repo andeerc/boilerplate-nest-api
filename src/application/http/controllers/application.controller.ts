@@ -8,7 +8,6 @@ class ApiEntryResponseDto {
 }
 
 @Controller()
-@ApiBearerAuth()
 export class ApplicationController {
 
   constructor() { }

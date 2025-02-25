@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
+import { LoginRefreshDto } from './dto/login-refresh.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,13 +30,13 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto): Promise<LoginResponseDto> {
-    const user = { id: 1, name: 'John Doe', isAdmin: true };
-    return await this.generateTokens(user);
+  login(dto: LoginDto): Promise<LoginResponseDto> {
+    const user = { id: 1, user: dto.user, isAdmin: true }; // This should be a real user from the database
+    return this.generateTokens(user);
   }
 
-  async refresh(refreshToken: string): Promise<LoginResponseDto> {
-    const { user } = this.jwtService.verify(refreshToken) as any;
-    return await this.generateTokens(user);
+  refresh(loginRefreshDto: LoginRefreshDto): Promise<LoginResponseDto> {
+    const { user } = this.jwtService.verify(loginRefreshDto.refreshToken) as any;
+    return this.generateTokens(user);
   }
 }
