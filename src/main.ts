@@ -33,6 +33,11 @@ async function bootstrap() {
     .addServer(`http://localhost:${apiPort}`)
     .setTitle('API')
     .setDescription('API')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .build();
 
   const swaggerDocumentFactory = SwaggerModule.createDocument(app, swaggerConfig);
