@@ -2,9 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
-import { BullModule } from '@nestjs/bull';
-import { BullBoardModule } from '@bull-board/nestjs';
-import { FastifyAdapter } from '@bull-board/fastify';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CqrsModule } from '@nestjs/cqrs';
 import * as Joi from 'joi';
@@ -12,6 +9,7 @@ import typeorm from './database/config/typeorm';
 import { DatabaseModule } from './database/database.module';
 import { ConfigurationModule } from './configuration/configuration.module';
 import { ConfigurationService } from './configuration/configuration.service';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -49,47 +47,10 @@ import { ConfigurationService } from './configuration/configuration.service';
       }),
       global: true,
     }),
-    BullModule.forRootAsync({
-      inject: [ConfigurationService],
-      useFactory: (configService: ConfigurationService) => ({
-        redis: {
-          host: configService.redisHost,
-          port: configService.redisPort,
-          username: configService.redisUsername,
-          password: configService.redisPassword
-        },
-        defaultJobOptions: {
-          removeOnComplete: 100,
-          removeOnFail: 100,
-          attempts: 10,
-          backoff: {
-            type: 'fixed',
-            delay: 1000,
-          },
-        },
-        metrics: {
-          maxDataPoints: 500,
-        },
-      }),
-    }),
-    BullBoardModule.forRoot({
-      boardOptions: {
-        uiConfig: {
-          boardTitle: 'API Jobs',
-          pollingInterval: {
-            forceInterval: 5000,
-            showSetting: true,
-          },
-          locale: {
-            lng: 'pt-BR',
-          }
-        }
-      },
-      route: '/bull',
-      adapter: FastifyAdapter,
-    }),
+    QueueModule,
     ScheduleModule.forRoot(),
     CqrsModule.forRoot(),
+    QueueModule,
   ],
 
 })
