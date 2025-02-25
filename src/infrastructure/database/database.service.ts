@@ -1,6 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { DataSource } from "typeorm";
-import createDefaultUser from "./seeds/create-user.seed";
 
 @Injectable()
 export class DatabaseService {
@@ -16,7 +15,6 @@ export class DatabaseService {
 
   async runSeeds() {
     const seeders = [
-      createDefaultUser,
     ]
 
     const initialTimestamp = Date.now();

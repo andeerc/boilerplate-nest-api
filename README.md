@@ -13,14 +13,13 @@ A estrutura do projeto é organizada em camadas, facilitando a manutenção e es
 ### Diretórios Principais
 
 - **application/**: Contém a lógica de aplicação, incluindo eventos, gateways e controladores HTTP.
-  - `events/`: Define os eventos do sistema.
+  - `cronjobs/`: Jobs agendados
   - `gateway/`: Implementação de WebSockets e outros gateways de comunicação.
   - `http/`: Controladores e serviços expostos via API REST.
 - **domain/**: Representa o domínio da aplicação, com as entidades e regras de negócio.
-  - `organization/`: Módulo relacionado à gestão de organizações.
   - `shared/`: Contém código reutilizável entre diferentes domínios.
-  - `users/`: Módulo de usuários.
 - **infrastructure/**: Responsável pela infraestrutura do projeto, como conexão com bancos de dados e repositórios.
+  - `configuration/`: Configurações gerais da aplicação
   - `database/`: Configuração e implementação do banco de dados.
 - **integrations/**: Módulo destinado a integrações com serviços externos.
 - **utils/**: Contém utilitários e funções auxiliares.
@@ -42,7 +41,9 @@ Para adicionar uma nova feature, siga os seguintes passos:
    - Caso a feature precise de WebSockets, adicione no `gateway/`.
 
 3. **Criar a infraestrutura**:
-   - Se a feature precisar de banco de dados, adicione as configurações e repositórios em `infrastructure/database/`.
+   - Se a feature precisar de banco de dados, adicione as configurações em `infrastructure/database/`.
+
+   - Para criar uma migration, execute `npm run m:create --name=your_migration`
 
 4. **Registrar o módulo**:
    - Adicione o novo módulo ao `app.module.ts` para que o NestJS o reconheça.

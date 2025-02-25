@@ -1,3 +1,4 @@
+import { applyFilters, Filter } from '@/domain/shared/apply-filters';
 import {
   DataSource,
   EntityTarget,
@@ -5,7 +6,6 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-import { applyFilters, Filter } from '../../../domain/shared/apply-filters';
 
 
 export abstract class BaseRepository<
@@ -30,7 +30,7 @@ export abstract class BaseRepository<
     return this.getFilteredQueryBuilder(filter).getMany();
   }
 
-  private getFilteredQueryBuilder(filter?: Filter): SelectQueryBuilder<T> {
+  getFilteredQueryBuilder(filter?: Filter): SelectQueryBuilder<T> {
     let qb = this.manager.createQueryBuilder(this.target, 'entity');
     qb = this.addEagerRelations(qb);
     if (filter) qb = applyFilters(qb, this.target, 'entity', filter);
