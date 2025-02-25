@@ -53,3 +53,19 @@ Para adicionar uma nova feature, siga os seguintes passos:
    - Crie testes automatizados para validar o funcionamento.
 
 Com essa estrutura modular, novas funcionalidades podem ser adicionadas de forma organizada e escalável.
+
+<!-- env -->
+## Variaveis de ambiente:
+
+- .env
+```bash
+PORT=3002
+JWT_SECRET=secret
+JWT_EXPIRATION_TIME=5m
+COOKIE_SECRET=secret
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_USERNAME=default
+REDIS_PASSWORD=default
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+```
