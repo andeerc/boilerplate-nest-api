@@ -1,11 +1,40 @@
-import { BaseRepository } from "@/infrastructure/database/shared/base-repository";
+import { DatabaseService } from './../database/database.service';
 import { Injectable } from "@nestjs/common";
-import { DataSource } from "typeorm";
-import { Configuration } from "./entities/configuration.entity";
 
 @Injectable()
-export class ConfigurationRepository extends BaseRepository<Configuration> {
-  constructor(dataSource: DataSource) {
-    super(Configuration, dataSource);
+export class ConfigurationRepository {
+  constructor(
+    private readonly databaseService: DatabaseService,
+  ) { }
+
+  async get(name: string, schema: string = 'public') {
+    return this.databaseService.qb('configurations')
+      .withSchema(schema)
+      .where({ name })
+      .first();
+  }
+
+  async getAll(schema: string = 'public') {
+    return this.databaseService.qb('configurations').withSchema(schema).select();
+  }
+
+  async set(name: string, value: any, schema: string = 'public') {
+    return this.databaseService.qb('configurations')
+      .withSchema(schema)
+      .insert({ name, value });
+  }
+
+  async update(name: string, value: any, schema: string = 'public') {
+    return this.databaseService.qb('configurations')
+      .withSchema(schema)
+      .where({ name })
+      .update({ value });
+  }
+
+  async delete(name: string, schema: string = 'public') {
+    return this.databaseService.qb('configurations')
+      .withSchema(schema)
+      .where({ name })
+      .delete();
   }
 }

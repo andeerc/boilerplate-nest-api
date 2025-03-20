@@ -1,23 +1,24 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
-import { DatabaseService } from './infrastructure/database/database.service';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { ClassSerializerInterceptor, LogLevel, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
-import { ConfigurationService } from './infrastructure/configuration/configuration.service';
+import { AppModule } from './app.module';
+import { DatabaseInfraService } from './infrastructure/database/database-infra.service';
 
 async function bootstrap() {
+  const logLevels: LogLevel[] = process.env.NODE_ENV === 'production' ? ['error', 'warn'] : ['verbose'];
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter({ trustProxy: true }),
+    { logger: logLevels }
   );
 
   app.enableCors();
+
+  // trust proxy
   app.use(morgan('tiny'));
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({
@@ -26,13 +27,11 @@ async function bootstrap() {
   }));
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  const appConfig = app.get(ConfigurationService);
-  const apiPort = await appConfig.get<number>('PORT');
-
-  const swaggerConfig = new DocumentBuilder()
-    .addServer(`http://localhost:${apiPort}`)
+  const config = new DocumentBuilder()
+    .addServer('http://localhost:3001', 'Local server')
     .setTitle('API')
-    .setDescription('API')
+    .setDescription('API project')
+    .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',
@@ -40,19 +39,20 @@ async function bootstrap() {
     })
     .build();
 
-  const swaggerDocumentFactory = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, swaggerDocumentFactory, {
+  const documentFactory = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, documentFactory, {
     customCss: `.swagger-ui .topbar { display: none }`,
+    customSiteTitle: 'API',
     jsonDocumentUrl: '/api/json',
     yamlDocumentUrl: '/api/yaml',
   });
 
-  const databaseService = app.get(DatabaseService);
+  const databaseService = app.get(DatabaseInfraService);
   await databaseService.runMigrations();
   await databaseService.runSeeds();
 
-  await app.listen({ host: "0.0.0.0", port: apiPort }, () => {
-    console.log(`Server is running on http://localhost:${apiPort}`);
+  await app.listen({ host: "0.0.0.0", port: 3001 }, () => {
+    console.log('Server is running on http://localhost:3001');
   });
 }
 

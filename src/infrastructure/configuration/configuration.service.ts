@@ -1,43 +1,16 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ConfigurationRepository } from './configuration.repository';
 
 @Injectable()
-export class ConfigurationService implements OnModuleInit {
+export class ConfigurationService {
   constructor(
     private readonly configService: ConfigService,
-    private readonly repo: ConfigurationRepository,
   ) { }
 
-  async onModuleInit() { }
-
-  async get<T = unknown>(name: string): Promise<T> {
-    const configuration = await this.repo.findOne({ where: { name } });
-    return configuration ? configuration.value as T : this.configService.get(name);
+  GetAll() {
+    return this.configService['_envConfig'];
   }
-
-  async set(name: string, value: any, updateIfExists = true) {
-    const hasConfiguration = await this.repo.findOne({ where: { name } });
-    if (hasConfiguration) {
-      if (!updateIfExists) {
-        return;
-      }
-
-      await this.repo.update({ name }, { value });
-    }
-
-    await this.repo.save(
-      this.repo.create({ name, value })
-    );
-  }
-
-  async delete(name: string) {
-    const configuration = await this.repo.findOne({ where: { name } });
-    if (configuration) {
-      await this.repo.delete({ name });
-    }
-  }
-
 
   get isDevelopment(): boolean {
     return this.configService.get('NODE_ENV') === 'development';
@@ -69,14 +42,6 @@ export class ConfigurationService implements OnModuleInit {
 
   get redisPort(): number {
     return this.configService.get<number>('REDIS_PORT');
-  }
-
-  get redisUsername(): string {
-    return this.configService.get<string>('REDIS_USERNAME');
-  }
-
-  get redisPassword(): string {
-    return this.configService.get<string>('REDIS_PASSWORD');
   }
 
   get databaseUrl(): string {

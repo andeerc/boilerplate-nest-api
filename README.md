@@ -13,13 +13,14 @@ A estrutura do projeto é organizada em camadas, facilitando a manutenção e es
 ### Diretórios Principais
 
 - **application/**: Contém a lógica de aplicação, incluindo eventos, gateways e controladores HTTP.
-  - `cronjobs/`: Jobs agendados
+  - `events/`: Define os eventos do sistema.
   - `gateway/`: Implementação de WebSockets e outros gateways de comunicação.
   - `http/`: Controladores e serviços expostos via API REST.
 - **domain/**: Representa o domínio da aplicação, com as entidades e regras de negócio.
+  - `organization/`: Módulo relacionado à gestão de organizações.
   - `shared/`: Contém código reutilizável entre diferentes domínios.
+  - `users/`: Módulo de usuários.
 - **infrastructure/**: Responsável pela infraestrutura do projeto, como conexão com bancos de dados e repositórios.
-  - `configuration/`: Configurações gerais da aplicação
   - `database/`: Configuração e implementação do banco de dados.
 - **integrations/**: Módulo destinado a integrações com serviços externos.
 - **utils/**: Contém utilitários e funções auxiliares.
@@ -41,7 +42,7 @@ Para adicionar uma nova feature, siga os seguintes passos:
    - Caso a feature precise de WebSockets, adicione no `gateway/`.
 
 3. **Criar a infraestrutura**:
-   - Se a feature precisar de banco de dados, adicione as configurações em `infrastructure/database/`.
+   - Se a feature precisar de banco de dados, adicione as configurações e repositórios em `infrastructure/database/`.
 
    - Para criar uma migration, execute `npm run m:create --name=your_migration`
 
@@ -53,19 +54,3 @@ Para adicionar uma nova feature, siga os seguintes passos:
    - Crie testes automatizados para validar o funcionamento.
 
 Com essa estrutura modular, novas funcionalidades podem ser adicionadas de forma organizada e escalável.
-
-<!-- env -->
-## Variaveis de ambiente:
-
-- .env
-```bash
-PORT=3002
-JWT_SECRET=secret
-JWT_EXPIRATION_TIME=5m
-COOKIE_SECRET=secret
-REDIS_HOST=localhost
-REDIS_PORT=6379
-REDIS_USERNAME=default
-REDIS_PASSWORD=default
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-```

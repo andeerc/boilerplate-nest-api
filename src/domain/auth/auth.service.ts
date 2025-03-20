@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
-import { LoginRefreshDto } from './dto/login-refresh.dto';
+import { UsersService } from '../users/users.service';
+import { UserDto } from '../users/dto/user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
   ) { }
 
-  private async generateTokens(user: any): Promise<LoginResponseDto> {
+  private async generateTokens(user: UserDto): Promise<LoginResponseDto> {
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -30,13 +32,18 @@ export class AuthService {
     };
   }
 
-  login(dto: LoginDto): Promise<LoginResponseDto> {
-    const user = { id: 1, user: dto.user, isAdmin: true }; // This should be a real user from the database
-    return this.generateTokens(user);
+  async login(dto: LoginDto): Promise<LoginResponseDto> {
+    const user = await this.usersService.authenticate(dto);
+    return await this.generateTokens(user);
   }
 
-  refresh(loginRefreshDto: LoginRefreshDto): Promise<LoginResponseDto> {
-    const { user } = this.jwtService.verify(loginRefreshDto.refreshToken) as any;
-    return this.generateTokens(user);
+  async refresh(refreshToken: string): Promise<LoginResponseDto> {
+    try {
+      const { user_id } = this.jwtService.verify(refreshToken) as any;
+      const user = await this.usersService.findById(user_id);
+      return await this.generateTokens(user);
+    } catch (error) {
+      throw new BadRequestException('Invalid refresh token');
+    }
   }
 }

@@ -4,11 +4,11 @@ class LoginResponseUserDto {
   @ApiProperty({ description: 'ID do usuário' })
   id: string;
 
-  @ApiProperty({ description: 'Login do usuário' })
-  name: string;
+  @ApiProperty({ description: 'E-mail do usuário' })
+  email: string;
 
-  @ApiProperty({ description: 'Flag de administrador' })
-  isAdmin: boolean;
+  @ApiProperty({ description: 'Nome do usuário' })
+  name: string;
 }
 
 export class LoginResponseDto {

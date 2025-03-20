@@ -1,0 +1,1 @@
+export const APP_EVENTS_QUEUE = 'app-events';
