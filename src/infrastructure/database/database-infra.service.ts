@@ -11,7 +11,7 @@ export class DatabaseInfraService {
 
   runMigrations() {
     this.logger.log('Running migrations...');
-    return this.knex.migrate.up();
+    return this.knex.migrate.latest();
   }
 
   runSeeds() {
